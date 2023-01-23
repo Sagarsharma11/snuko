@@ -1,9 +1,11 @@
 import React,{useState} from 'react'
 import './Board.css'
-import { VscCircleFilled } from "react-icons/vsc/";
+import { VscCircleFilled,VscOctoface } from "react-icons/vsc/";
 
 const Board = () => {
     const [dice, setDice] = useState(1)
+    const [init, setInit] = useState(0)
+    const [pos, setPos] = useState(0)
     let value = 'class';
     let num = 1;
     function getDice() {
@@ -13,18 +15,36 @@ const Board = () => {
             value+=1;
          }
          setDice(value)
+         moveUser(value)
+      }
+
+      const moveUser=(value)=>{
+      
+            if(value===6 && init===0)
+            {
+                setInit(1)
+                let val = document.querySelector(`.block${1}`).getAttribute('data-value');
+                document.querySelector(`.block1`).innerHTML= '<i class="fa-solid fa-user "></i>'
+                setPos(1)
+            }else{
+                let val = document.querySelector(`.block${pos}`).getAttribute('data-value');
+                document.querySelector(`.block${pos}`).innerHTML = `<p>${val}</P>`
+                let movepos = parseInt(val)+parseInt(value)
+                document.querySelector(`.block${movepos}`).innerHTML= '<i class="fa-solid fa-user "></i>'
+                setPos(movepos)
+            }
+
       }
     return (
         <div className="container">
-            <div className="row">
-                
-                <div className="col-sm-10">
+            <div className="row">              
+                <div className="col-sm-10 my-2">
                     <div className="row ms-5 image-wrapper">
                         {
                             [...Array(100)].map( (e, i) => {
                                 {num=i/2}
                                 {num%2===0 ?value='color1':i%3===0? value='color2':i%7===0?value='color3':value='color4'}
-                                return <div className={`blocks ${value}`}> <p>{100-i}  </p></div>
+                                return <div data-value={`${100-i}`} className={`blocks ${value} block${100-i}`}> <p>{100-i}  </p></div>
                             })
                         }
                         <img className='snake1' src={require('./image/snake (1).png')} alt="" />
@@ -33,8 +53,8 @@ const Board = () => {
                         <img className='snake4' src={require('./image/snake (4).png')} alt="" />
                     </div>
                 </div>
-                <div className="col-sm-2 border">
-                    <div className="row">
+                <div className="col-sm-2 my-2 border">
+                    <div className="row ">
                         <div className="col-sm-12">
                             <button className="dice btn pb-3" onClick={getDice}>
                                 {[...Array(dice)].map((e)=>{
